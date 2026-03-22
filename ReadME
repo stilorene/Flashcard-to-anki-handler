@@ -1,0 +1,22 @@
+Phase 1: Die Brücke in Anki bauen (Einmalig)
+
+Damit Anki überhaupt „zuhört“, wenn dein Python-Skript klopft, brauchst du das Add-on AnkiConnect.
+
+    Anki öffnen.
+
+    Gehe oben im Menü auf Extras (Tools) -> Erweiterungen (Add-ons).
+
+    Klicke rechts auf Erweiterungen herunterladen....
+
+    Gib diesen Code ein: 2055492159 und klicke auf OK.
+
+    Ganz wichtig: Starte Anki danach einmal komplett neu!
+
+Phase 2: Python vorbereiten
+
+Dein Skript muss „HTTP-Anfragen“ senden können. Dafür nutzen wir die Standard-Bibliothek requests.
+
+Öffne dein Terminal (PowerShell oder unter Linux die Bash) in deinem Projektordner und tippe:
+PowerShell
+
+pip install requests
