@@ -76,6 +76,8 @@ def show_text():
     )
     selected_button.pack(side=tk.LEFT, padx=10)
 
+    
+
     def on_mousewheel(event):
         canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
