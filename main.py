@@ -13,7 +13,7 @@ def split_text(csv_text):
 
 
 def copy_to_clipboard():
-    root.clipboard_clear()
+    root.clipboard_clear() # Löscht den aktuellen Inhalt des Schrittplattenpuffers
     root.clipboard_append(prompt.text)
     root.update()
     status_label.config(text="✓ Prompt wurde kopiert!", fg="green")

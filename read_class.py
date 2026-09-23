@@ -1,6 +1,8 @@
 import tkinter as tk
 from anki_import import create_anki_deck, get_anki_decks
 
+# Hält den aktuell ausgewählten Deck-Namen
+SELECTED_DECK = ""  # Wird später als tk.StringVar() initialisiert
 
 def clear_frame(checkbox_frame):
     # Inhalt in Canvas, eher der frame (die Checkboxen) entfernen
@@ -22,14 +24,14 @@ def get_selected_content(checkbox_save, checkbox_frame, selected_button, button_
             text="Keine Auswahl getroffen",
             font=("Arial", 14, "bold"),
             fg="#E74C3C",
-            bg="lightgrey"
+            bg="lightgrey",
         ).pack(expand=True, fill=tk.BOTH, pady=50)
     else:
         tk.Label(
             checkbox_frame,
             text="Gewählte Elemente:",
             font=("Arial", 12, "underline"),
-            bg="lightgrey"
+            bg="lightgrey",
         ).pack(pady=(10, 20))
 
         for item in selected_items:
@@ -40,7 +42,7 @@ def get_selected_content(checkbox_save, checkbox_frame, selected_button, button_
                 bg="white",
                 padx=10,
                 pady=5,
-                relief="groove"
+                relief="groove",
             ).pack(pady=10, padx=20, anchor="center")
 
     # Alter Button löschen, neuer erstellt
@@ -53,7 +55,7 @@ def get_selected_content(checkbox_save, checkbox_frame, selected_button, button_
         font=("Arial", 10, "bold"),
         padx=20,
         pady=8,
-        command=lambda: which_stapel_import(checkbox_frame)
+        command=lambda: which_stapel_import(checkbox_frame, button_frame, selected_button),
     )
     selected_button.pack(side=tk.LEFT, padx=10)
 
@@ -71,7 +73,7 @@ def show_create_deck_dialog(checkbox_frame):
         dialog,
         text="Bitte gib den Namen des neuen Stapels ein:",
         font=("Arial", 11, "bold"),
-        bg="lightgrey"
+        bg="lightgrey",
     ).pack(anchor="w", padx=20, pady=(20, 10))
 
     entry_var = tk.StringVar()
@@ -85,7 +87,7 @@ def show_create_deck_dialog(checkbox_frame):
         bg="lightgrey",
         font=("Arial", 10),
         wraplength=360,
-        justify="left"
+        justify="left",
     )
     status_label.pack(anchor="w", padx=20, pady=(8, 0))
 
@@ -102,7 +104,9 @@ def show_create_deck_dialog(checkbox_frame):
             which_stapel_import(checkbox_frame)
             return
 
-        status_label.config(text="Der Stapel konnte nicht angelegt werden. Prüfe die Anki-Verbindung und den Namen.")
+        status_label.config(
+            text="Der Stapel konnte nicht angelegt werden. Prüfe die Anki-Verbindung und den Namen."
+        )
 
     button_row = tk.Frame(dialog, bg="lightgrey")
     button_row.pack(pady=20)
@@ -115,7 +119,7 @@ def show_create_deck_dialog(checkbox_frame):
         font=("Arial", 10, "bold"),
         padx=20,
         pady=8,
-        command=submit_new_deck
+        command=submit_new_deck,
     ).pack(side=tk.LEFT, padx=10)
 
     tk.Button(
@@ -126,14 +130,14 @@ def show_create_deck_dialog(checkbox_frame):
         font=("Arial", 10, "bold"),
         padx=20,
         pady=8,
-        command=dialog.destroy
+        command=dialog.destroy,
     ).pack(side=tk.LEFT, padx=10)
 
     entry.focus_set()
     entry.bind("<Return>", lambda event: submit_new_deck())
 
 
-def which_stapel_import(checkbox_frame):
+def which_stapel_import(checkbox_frame, button_frame, selected_button):
     clear_frame(checkbox_frame)
 
     stapels = get_anki_decks()
@@ -142,7 +146,7 @@ def which_stapel_import(checkbox_frame):
         checkbox_frame,
         text="Stapel auswählen:",
         font=("Arial", 12, "underline"),
-        bg="lightgrey"
+        bg="lightgrey",
     ).pack(pady=(10, 10))
 
     tk.Button(
@@ -153,7 +157,7 @@ def which_stapel_import(checkbox_frame):
         font=("Arial", 10, "bold"),
         padx=20,
         pady=8,
-        command=lambda: show_create_deck_dialog(checkbox_frame)
+        command=lambda: show_create_deck_dialog(checkbox_frame),
     ).pack(pady=(0, 15))
 
     if not stapels:
@@ -162,23 +166,47 @@ def which_stapel_import(checkbox_frame):
             text="Keine Stapel gefunden. Bitte stelle sicher, dass Anki läuft und AnkiConnect aktiv ist.",
             font=("Arial", 11),
             bg="lightgrey",
-            fg="#E74C3C"
+            fg="#E74C3C",
         ).pack(pady=20)
         return
 
+    #Alter Button (Auswahl akzeptieren) löschen, neuer Button wird erstellt;
+    selected_button.destroy()
+    selected_button = tk.Button(
+        button_frame,
+        text="In ausgewählten Stapel importieren",
+        bg="#5B3CE7",
+        fg="white",
+        font=("Arial", 10, "bold"),
+        padx=20,
+        pady=8,
+        command=lambda: (checkbox_frame),
+        # #Funktionsaufruf hier anpassen, um den ausgewählten Stapel zu verwenden;
+    )
+    selected_button.pack(side=tk.LEFT, padx=10)
+
     selected_deck_button = None
 
+    # Funktion, um den ausgewählten Stapel zu speichern und die Button-Farbe zu ändern
     def handle_deck_click(current_item, current_button):
         nonlocal selected_deck_button
+        global SELECTED_DECK  # Zugriff auf die globale Variable
 
-        if selected_deck_button is not None and selected_deck_button is not current_button:
+        if (
+            selected_deck_button is not None
+            and selected_deck_button is not current_button
+        ):
             selected_deck_button.config(bg="white", fg="black", relief="raised")
 
         current_button.config(bg="#27AE60", fg="white", relief="sunken")
         selected_deck_button = current_button
-        print(f"Stapel ausgewählt: {current_item}")
+        # print(f"Stapel ausgewählt: {current_item}")
+        SELECTED_DECK = current_item
+        print(f"SELECTED_DECK aktualisiert: {SELECTED_DECK}");
 
     for item in stapels:
+        if item == "Standard":
+            continue
         if item == "Default":
             continue
 
@@ -189,10 +217,13 @@ def which_stapel_import(checkbox_frame):
             bg="white",
             padx=10,
             pady=6,
-            relief="raised"
+            relief="raised",
         )
-        deck_button.config(command=lambda item=item, deck_button=deck_button: handle_deck_click(item, deck_button))
+        deck_button.config(
+            command=lambda item=item, deck_button=deck_button: handle_deck_click(
+                item, deck_button
+            )
+        )
         deck_button.pack(pady=8, padx=20, anchor="center", fill=tk.X)
 
     checkbox_frame.update_idletasks()
-  

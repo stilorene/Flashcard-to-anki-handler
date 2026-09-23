@@ -1,3 +1,5 @@
+#Default prompt for the flashcard-to-anki-handler project
+
 text = """Was ist die Wirtschaftsinformatik im Verhältnis zu BWL und Informatik?;Ein eigenständiges interdisziplinäres Fach zwischen *BWL* und *Informatik*.
 Welche vier zentralen Aufgaben verfolgt die Wirtschaftsinformatik im Umgang mit Informationssystemen?;Beschreibung, Erklärung, Prognose und Gestaltung rechnergestützter Informationssysteme.
 In welchen gesellschaftlichen Bereichen werden Informationssysteme laut WI eingesetzt?;In Wirtschaft, Verwaltung und zunehmend im privaten Umfeld.
